@@ -10,6 +10,7 @@ const config = {
   devServer: {
     static: './dist',
     hot: true,
+    allowedHosts: "all",
   },
   externalsType: 'script',
   externals: {
