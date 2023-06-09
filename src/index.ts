@@ -29,12 +29,12 @@ const fetchTile = async (
   canvas.width = realPixels(tileSize)
   canvas.height = realPixels(tileSize)
 
-  let currentDate = new Date();
-  let hours = String(currentDate.getHours()).padStart(2, '0');
-  let minutes = String(currentDate.getMinutes()).padStart(2, '0');
-  let seconds = String(currentDate.getSeconds()).padStart(2, '0');
+  let currentDate = new Date()
+  let hours = String(currentDate.getHours()).padStart(2, "0")
+  let minutes = String(currentDate.getMinutes()).padStart(2, "0")
+  let seconds = String(currentDate.getSeconds()).padStart(2, "0")
 
-  ctx.font="30px Georgia"
+  ctx.font = "30px Georgia"
   ctx.fillStyle = "#000000"
   ctx.fillText(`${hours}:${minutes}:${seconds}`, realPixels(10), realPixels(15))
 
@@ -51,28 +51,43 @@ const ds = new YMapTileDataSource({
   },
 })
 
+const dsLayer = new YMapLayer({
+  zIndex: 2000,
+  source: "tileDS",
+  type: "tiles",
+})
+
 const map = new YMap(
   document.getElementById("root"),
   { location: { center: [34.321359, 61.783364], zoom: 13 } },
-  [
-    new YMapDefaultSchemeLayer({}),
-    ds,
-    new YMapLayer({
-      zIndex: 2000,
-      source: "tileDS",
-      type: "tiles",
-    })
-  ]
+  [new YMapDefaultSchemeLayer({}), ds, dsLayer]
 )
 
+var a = 1
 /**
  * Обновляет тайлы каждую секунду.
  * Должно, но не работает.
  */
 const update = () => {
   console.log("update fired")
-  // @ts-ignore
-  ds.update({raster: {...ds.raster, fetchTile: fetchTile}})
+  ds.update({
+    raster: {
+      type: "tiles",
+      fetchTile: undefined,
+    },
+  })
+  ds.update({
+    raster: {
+      type: "tiles",
+      fetchTile: fetchTile,
+    },
+  })
+
+  // dsLayer.update({
+  //   zIndex: 2001,
+  //   source: "tileDS",
+  //   type: "tiles",
+  // })
 }
 
-let timerId = setInterval(update, 1000);
+let timerId = setInterval(update, 1000)
